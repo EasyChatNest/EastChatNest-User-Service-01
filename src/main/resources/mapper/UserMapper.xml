@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chatnest.chatnestuserservice01.mapper.UserMapper">
+
+    <insert id="insertUser" parameterType="com.chatnest.chatnestuserservice01.entity.User">
+
+        INSERT INTO user (id, username, email, phone, password,
+                          nickname, gender, region) VALUES (#{id},#{username},#{email},
+                                                            #{phone},#{password},#{nickname}
+                                                            ,#{gender},#{region})
+
+    </insert>
+
+    <select id="selectByEmail" parameterType="String"
+            resultType="com.chatnest.chatnestuserservice01.entity.User">
+        SELECT * FROM user WHERE email = #{email} LIMIT 1
+    </select>
+
+
+    <select id="selectByPhone" parameterType="String"
+            resultType="com.chatnest.chatnestuserservice01.entity.User">
+        SELECT * FROM user WHERE phone = #{phone} LIMIT 1
+    </select>
+
+</mapper>
