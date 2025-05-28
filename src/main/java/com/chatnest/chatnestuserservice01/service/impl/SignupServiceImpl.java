@@ -19,8 +19,8 @@ public class SignupServiceImpl implements SignupService {
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-//    @Autowired
-//    private SendVerifyCodeService sendVerifyCodeService;
+    private final SendVerifyCodeService sendVerifyCodeService;
+
     @Override
     public ApiResponse<SignupResponse> register(SignupRequest signupRequest) {
         // Now assume we only allow register and sign in by Email
@@ -31,9 +31,8 @@ public class SignupServiceImpl implements SignupService {
         // After this line, means it is a new user
         // send Verify Code to the inputted email (use SendVertifyCodeServiceImpl)
         // FeignClient
+        sendVerifyCodeService.sendCode("signupRequest.getEmail()");
         System.out.println("Sending verification code to: " + signupRequest.getEmail());
-
-
 
         // save the Token in redis
 
