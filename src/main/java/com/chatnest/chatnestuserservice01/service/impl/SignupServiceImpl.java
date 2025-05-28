@@ -38,6 +38,15 @@ public class SignupServiceImpl implements SignupService {
 
 
         // save the user's information into MySQL
+        storeUserInfo(signupRequest);
+
+        // send back the SignupResponse to the frontend with Token
+        // Fill the signup response
+
+        return null;
+    }
+
+    private void storeUserInfo(SignupRequest signupRequest){
         User user = new User();
         // input the data
         user.setUsername(signupRequest.getUsername());
@@ -48,13 +57,6 @@ public class SignupServiceImpl implements SignupService {
         user.setRegion(signupRequest.getRegion());
         // passwordEncoder.encode(signupRequest.getPassword()) 加密
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-
         userMapper.insertUser(user);
-
-
-        // send back the SignupResponse to the frontend with Token
-        // Fill the signup response
-
-        return null;
     }
 }

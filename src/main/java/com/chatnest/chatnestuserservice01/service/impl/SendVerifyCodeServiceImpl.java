@@ -2,6 +2,7 @@ package com.chatnest.chatnestuserservice01.service.impl;
 
 import com.chatnest.chatnestuserservice01.service.SendVerifyCodeService;
 import org.springframework.stereotype.Service;
+import java.util.Random;
 
 @Service
 public class SendVerifyCodeServiceImpl implements SendVerifyCodeService {
@@ -17,7 +18,7 @@ public class SendVerifyCodeServiceImpl implements SendVerifyCodeService {
 
     @Override
     public String generateCode() {
-        return null;
+        return String.format("%06d", new Random().nextInt(999999));
     }
 
 }
