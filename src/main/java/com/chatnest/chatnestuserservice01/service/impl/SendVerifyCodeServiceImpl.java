@@ -1,13 +1,10 @@
 package com.chatnest.chatnestuserservice01.service.impl;
-
-
 import com.chatnest.chatnestuserservice01.service.SendVerifyCodeService;
 import com.chatnest.chatnestuserservice01.utils.RedisUtil;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
-
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +17,7 @@ public class SendVerifyCodeServiceImpl implements SendVerifyCodeService {
 
     @Override
     public void sendCode(String email, String code) {
-        // 假设你已经集成邮件服务了
+        // 假设已经集成邮件服务了
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("Your Verification Code");
