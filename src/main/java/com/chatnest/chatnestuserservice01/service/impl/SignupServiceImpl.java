@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 @RequiredArgsConstructor
 public class SignupServiceImpl implements SignupService {
@@ -26,31 +28,29 @@ public class SignupServiceImpl implements SignupService {
 
     @Override
     public ApiResponse<SignupResponse> register(SignupRequest signupRequest) {
-        // Now assume we only allow register and sign in by Email
-        // check if the email or the phone number has been registered before
-        checkifRegistered(userMapper,signupRequest);
-        // After this line, means it is a new user
-        // send Verify Code to the inputted email (use SendVertifyCodeServiceImpl)
-        // FeignClient
-//        sendVerifyCodeService.sendCode("signupRequest.getEmail()");
-        System.out.println("Sending verification code to: " + signupRequest.getEmail());
+        checkIfRegistered(userMapper, signupRequest);
 
-        sendVerifyCodeService.sendCode(signupRequest.getEmail(),sendVerifyCodeService.generateCode());
-        // save the vertify code into redis
+        String code = sendVerifyCodeService.generateCode();
+        sendVerifyCodeService.sendCode(signupRequest.getEmail(), code);
+        redisUtil.set("verify:email:" + signupRequest.getEmail(), code, 1, TimeUnit.HOURS);
 
-
-        // save the Token in redis
-        // use Redis Util
-
-
-        // save the user's information into MySQL
         storeUserInfo(signupRequest);
 
-        // send back the SignupResponse to the frontend with Token
-        // Fill the signup response
+        String token = "fakeToken"; // 未来可替换为 JWT 工具类生成
+        SignupResponse response = buildSignupResponse(signupRequest, token);
+        return ApiResponse.success(response);
 
-        return null;
     }
+
+    private SignupResponse buildSignupResponse(SignupRequest signupRequest, String token) {
+        SignupResponse response = new SignupResponse();
+        response.setUsername(signupRequest.getUsername());
+        response.setEmail(signupRequest.getEmail());
+        response.setToken(token);
+        return response;
+    }
+
+
 
     private void storeUserInfo(SignupRequest signupRequest){
         User user = new User();
@@ -66,7 +66,7 @@ public class SignupServiceImpl implements SignupService {
         userMapper.insertUser(user);
     }
 
-    private void checkifRegistered(UserMapper userMapper,SignupRequest signupRequest){
+    private void checkIfRegistered(UserMapper userMapper,SignupRequest signupRequest){
         if (userMapper.selectByEmail(signupRequest.getEmail()) != null){
             throw new RuntimeException("The user has been registered before");
         }
